@@ -1,30 +1,42 @@
-def remove(text):
+def remove_whitespace(text):
     return "".join(text.split())
 
-def cipher(text, key, string):
-        if key > 25 or key < 0 :
-            print('The key should be in range 0 - 25')
+def encrypt(text, key):
+    result = ""
+    for char in text:
+        if 'A' <= char <= 'Z':
+            result += chr(((ord(char) - ord('A') + key) % 26) + ord('A'))
+        elif 'a' <= char <= 'z':
+            result += chr(((ord(char) - ord('a') + key) % 26) + ord('a'))
         else:
-            for char in text:
-                if not ('A' <= char <= 'Z'):
-                    print("The text should be in range A - Z or a - z")
-                    return
-            alphabet = "ABCDEFGHIJKLMNOPQRSTUVWXYZ"
-            result = ""
-            if string == 'e':
-                for i in range(len(text)):
-                    char = text[i]
-                    result += alphabet[(alphabet.index(char) + key) % 26]
+            print("The text should be in range A - Z or a - z")
+            return None
+    return result
 
-            elif string == 'd':
-                key = -key
-                for i in range(len(text)):
-                    char = text[i]
-                    result += alphabet[(alphabet.index(char) + key) % 26]
+def decrypt(text, key):
+    return encrypt(text, -key)
+
+def main():
+    text = input('Enter your text: ').upper()
+    text = remove_whitespace(text)
+    key = int(input('Enter the key (0 - 25): '))
+
+    if key < 0 or key > 25:
+        print('The key should be in range 0 - 25')
+        return
+
+    operation = input('Choose "e" for encryption or "d" for decryption: ')
+
+    if operation == 'e':
+        result = encrypt(text, key)
+        if result:
             print(result)
+    elif operation == 'd':
+        result = decrypt(text, key)
+        if result:
+            print(result)
+    else:
+        print('Invalid operation. Please choose "e" or "d".')
 
-text = input('Enter your text ').upper()
-text = remove(text)
-key = int(input('Enter the key '))
-string = input('Choose e for encryption or d for decription ')
-cipher(text, key, string)
+if __name__ == "__main__":
+    main()
